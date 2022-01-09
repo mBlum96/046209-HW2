@@ -18,8 +18,10 @@ private:
 public:
     Bank();
     ~Bank();
-    Message openAccount(int accId,int accPass,float initAmount);
-    Message doesAccountExist();
+    Message openAccount(int accId,int accPass,int initAmount);
+    Message doesAccountExist(int accId);
+    Message withDrawMoney(int accId,int accPass,int amount);
+    Message checkPass(int accId, int accPass);
 };
 
 

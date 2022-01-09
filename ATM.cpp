@@ -1,6 +1,7 @@
 //includes:
 #include "ATM.hpp"
 #include "Bank.hpp"
+#include "Log.hpp"
 
 #define MAX_LINE_SIZE 0//to be determined
 #define MAX_ARGS 0//to be determined
@@ -51,7 +52,8 @@ void ATM::run(int argc, char* argv[]){
         cout << "> ";
         fgets(line_input, MAX_LINE_SIZE, stdin);
 
-        this->executeLine(line_input);
+        Message printMsg = this->executeLine(line_input);
+
         line_input[0] = '\0'; //initialized for next line read
     }
 }
@@ -75,14 +77,54 @@ Message ATM::executeLine(char* line_input/*, char* cmd_stirng*/){
             delimitered_command.append(args[i]);
         }
     }
-    if(!strcmp(cmd,"O")){
+    if(!strcmp(cmd,"O")||!strcmp(cmd,"D")||!strcmp(cmd,"W")){
         int accId = atoi(args[1]);
         int accPass = atoi(args[2]);
-        float initAmount = atof(args[3]);
-        if(bank.doesAccountExist()==ACC_DOESNT_EXIST){
-            return bank.openAccount(accId,accPass, initAmount);
+        int amount = atof(args[3]);
+        Message accountExistance = bank.doesAccountExist(accId);
+        if(!strcmp(cmd,"O")){
+            if(accountExistance==ACC_DOESNT_EXIST){
+                this->printer(bank.openAccount(accId,accPass, amount),args);
+                return SUCCESS;
+            }
+            return FAILED_OPENING_ACC;
         }
-        return FAILED_OPENING_ACC;
+        else if(!strcmp(cmd,"W")){
+            if(accountExistance == ACC_EXISTS){
+                Message passCheckRes = bank.checkPass(accId,accPass);
+                if(passCheckRes == PASSWORD_CURR){
+                    this->printer(bank.withDrawMoney(accId,accPass,amount), args);
+                }
+                else{
+                    this->printer(passCheckRes, args);
+                }
+            }
+        }
     }
+    elseif()
     return SUCCESS;
+}
+
+void ATM::printer(Message printMsg, char* args[] ){
+    stringstream lineToPrint;
+    switch (printMsg)
+    {
+    case FAILED_OPENING_ACC:
+        lineToPrint << "Error " << this->atmId << ": Your transaction failed "
+        <<"- account with the same id existss";
+        break;
+    case CREATED_NEW_ACC:
+        lineToPrint << "<" << this->atmId << ">: New account id is " << args[1]
+        <<"with password " << args[2] << " and initial balance " << args[3];
+        break;
+    case WITHDREW_MONEY:
+        lineToPrint << "";
+        break;
+    case INSUFFICIANT_FUNDS:
+
+        break;
+
+    default:
+        break;
+    }
 }

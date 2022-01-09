@@ -23,6 +23,7 @@ public:
     void run(int argc, char* argv[]);
     Message executeLine(char* line_input);
     void welcome();
+    void printer(Message printMsg, char* args[]);
 
 };
 
