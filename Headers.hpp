@@ -41,7 +41,13 @@ typedef enum{
     CREATED_NEW_ACC,
     PASSWORD_CURR,
     WITHDREW_MONEY,
-    INSUFFICIANT_FUNDS
+    INSUFFICIANT_FUNDS,
+    DEPOSITED_MONEY
 }Message;
+
+typedef enum{
+        WITHDRAW,
+        DEPOSIT
+}Action;
 
 #endif

@@ -20,21 +20,40 @@ Message Bank::openAccount(int accId,int accPass,int initAmount){
     Account newAccount(new_acc_prm);
     pthread_mutex_lock(&accountWriteLock);
     account_map.insert({new_acc_prm.account_id, newAccount});
-    sleep(1);
     pthread_mutex_unlock(&accountWriteLock);
+    sleep(1);
     return CREATED_NEW_ACC;
 }
 
-Message Bank::withDrawMoney(int accId,int accPass,int amount){
+Message Bank::withDrawMoney(int accId,int accPass,
+int amount, int *amount_getter){
     pthread_mutex_lock(&accountWriteLock);
     auto it = account_map.find(accId);
-    if(it->second.balanceGetter() < amount){
+    *amount_getter = it->second.balanceGetter();
+    if(*amount_getter <= amount){
+        *amount_getter -= amount;
+        pthread_mutex_unlock(&accountWriteLock);
         return INSUFFICIANT_FUNDS;
     }
-    it->second.balanceSetter(amount);
-    sleep(1);
+    it->second.balanceSetter(amount,WITHDRAW);
     pthread_mutex_unlock(&accountWriteLock);
+    sleep(1);
     return WITHDREW_MONEY;
+}
+
+Message Bank::depositMoney(int accId,int accPass, int amount
+, int *amount_getter){
+    pthread_mutex_lock(&accountWriteLock);
+    auto it = account_map.find(accId);
+    *amount_getter = it->second.balanceGetter()+amount;
+    it->second.balanceSetter(amount,DEPOSIT);
+    pthread_mutex_unlock(&accountWriteLock);
+    sleep(1);
+    return DEPOSITED_MONEY;
+}
+int Bank::checkAccountBalance(int accId){
+    auto it = account_map.find(accId);
+    return it->second.balanceGetter();
 }
 
 Message Bank::checkPass(int accId, int accPass){

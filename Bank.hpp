@@ -20,8 +20,10 @@ public:
     ~Bank();
     Message openAccount(int accId,int accPass,int initAmount);
     Message doesAccountExist(int accId);
-    Message withDrawMoney(int accId,int accPass,int amount);
+    Message withDrawMoney(int accId,int accPass,int amount,int *amount_getter);
+    Message depositMoney(int accId,int accPass,int amount,int *ammount_getter);
     Message checkPass(int accId, int accPass);
+    int checkAccountBalance(int accId);
 };
 
 

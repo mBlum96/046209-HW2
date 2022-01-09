@@ -63,6 +63,7 @@ Message ATM::executeLine(char* line_input/*, char* cmd_stirng*/){
     char* cmd;
     char* args[MAX_ARGS];
     char delimmiters[4] = " \t\n";
+    int *amount_getter;
     string delimitered_command = {'\0'};
     cmd = strtok(line_input, delimmiters);
     /*if(cmd==NULL){
@@ -84,7 +85,8 @@ Message ATM::executeLine(char* line_input/*, char* cmd_stirng*/){
         Message accountExistance = bank.doesAccountExist(accId);
         if(!strcmp(cmd,"O")){
             if(accountExistance==ACC_DOESNT_EXIST){
-                this->printer(bank.openAccount(accId,accPass, amount),args);
+                this->printer
+                (bank.openAccount(accId,accPass, amount),args,amount_getter);
                 return SUCCESS;
             }
             return FAILED_OPENING_ACC;
@@ -93,19 +95,19 @@ Message ATM::executeLine(char* line_input/*, char* cmd_stirng*/){
             if(accountExistance == ACC_EXISTS){
                 Message passCheckRes = bank.checkPass(accId,accPass);
                 if(passCheckRes == PASSWORD_CURR){
-                    this->printer(bank.withDrawMoney(accId,accPass,amount), args);
+                    this->printer(bank.withDrawMoney
+                    (accId,accPass,amount,amount_getter), args, amount_getter);
                 }
                 else{
-                    this->printer(passCheckRes, args);
+                    this->printer(passCheckRes, args, amount_getter);
                 }
             }
         }
     }
-    elseif()
     return SUCCESS;
 }
 
-void ATM::printer(Message printMsg, char* args[] ){
+void ATM::printer(Message printMsg, char* args[],int *amount_getter){
     stringstream lineToPrint;
     switch (printMsg)
     {
@@ -114,14 +116,22 @@ void ATM::printer(Message printMsg, char* args[] ){
         <<"- account with the same id existss";
         break;
     case CREATED_NEW_ACC:
-        lineToPrint << "<" << this->atmId << ">: New account id is " << args[1]
+        lineToPrint << this->atmId << ": New account id is " << args[1]
         <<"with password " << args[2] << " and initial balance " << args[3];
         break;
     case WITHDREW_MONEY:
-        lineToPrint << "";
+        lineToPrint << this->atmId << ": Account " << args[1] <<
+        " new balance is " << amount_getter << " after "
+        << args[3] << " withdrew";
         break;
     case INSUFFICIANT_FUNDS:
-
+        lineToPrint <<"Error "<<this->atmId <<
+        ": Your transaction failed - account id"<<args[1]
+        << "balance is lower than " << args[3];
+        break;
+    case PASSWORD_ERR:
+        lineToPrint << "Error" << this->atmId<<": Your transaction failed - "
+        << "password for account id" << args[1] << "is incorrect";
         break;
 
     default:
