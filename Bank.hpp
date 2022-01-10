@@ -13,17 +13,21 @@ private:
     unordered_map<int, Account> account_map;
     int bankBalance;
     pthread_mutex_t logLock;
-    pthread_mutex_t accountReadLock;
+    sem_t accountReadLock;
     pthread_mutex_t accountWriteLock;
 public:
     Bank();
     ~Bank();
-    Message openAccount(int accId,int accPass,int initAmount);
-    Message doesAccountExist(int accId);
-    Message withDrawMoney(int accId,int accPass,int amount,int *amount_getter);
-    Message depositMoney(int accId,int accPass,int amount,int *ammount_getter);
-    Message checkPass(int accId, int accPass);
-    int checkAccountBalance(int accId);
+    Message openAccount(const int accId,const int accPass,
+    const int initAmount);
+    Message doesAccountExist(const int accId);
+    Message withDrawMoney(const int accId,const int amount, int *amount_getter);
+    Message depositMoney(const int accId,const int amount, int *amount_getter);
+    Message checkPass(const int accId,const int accPass);
+    Message deleteAccount(const int accId, int *amount_getter);
+    Message transfer(const int sourceId, const int sourcePass,
+    const int targetId, const int amount, int *amount_getter);
+    int checkAccountBalance(const int accId);
 };
 
 

@@ -78,30 +78,77 @@ Message ATM::executeLine(char* line_input/*, char* cmd_stirng*/){
             delimitered_command.append(args[i]);
         }
     }
+    int accId = atoi(args[1]);
+    int accPass = atoi(args[2]);
+    Message accountExistance = bank.doesAccountExist(accId);
     if(!strcmp(cmd,"O")||!strcmp(cmd,"D")||!strcmp(cmd,"W")){
-        int accId = atoi(args[1]);
-        int accPass = atoi(args[2]);
-        int amount = atof(args[3]);
-        Message accountExistance = bank.doesAccountExist(accId);
+        int amount = atoi(args[3]);
         if(!strcmp(cmd,"O")){
             if(accountExistance==ACC_DOESNT_EXIST){
-                this->printer
-                (bank.openAccount(accId,accPass, amount),args,amount_getter);
+                Message retMsg = bank.openAccount(accId,accPass,amount);
+                this->printer(retMsg,args,amount_getter);
                 return SUCCESS;
             }
             return FAILED_OPENING_ACC;
         }
-        else if(!strcmp(cmd,"W")){
+        else if(!strcmp(cmd,"W")||!strcmp(cmd,"D")){
             if(accountExistance == ACC_EXISTS){
                 Message passCheckRes = bank.checkPass(accId,accPass);
                 if(passCheckRes == PASSWORD_CURR){
-                    this->printer(bank.withDrawMoney
-                    (accId,accPass,amount,amount_getter), args, amount_getter);
+                    if(!strcmp(cmd,"W")){
+                        Message retMsg = bank.withDrawMoney
+                        (accId,amount,amount_getter);
+                        this->printer(retMsg, args, amount_getter);
+                    }
+                    else{
+                        Message retMsg = 
+                        bank.depositMoney(accId,amount,amount_getter);
+                        this->printer(retMsg,args,amount_getter);
+                    }
                 }
                 else{
                     this->printer(passCheckRes, args, amount_getter);
                 }
             }
+        }
+    }
+    else if(!strcmp(cmd,"B")){
+        if(accountExistance == ACC_EXISTS){
+            Message passCheckRes = bank.checkPass(accId,accPass);
+            if(passCheckRes==PASSWORD_CURR){
+                int *balanceAmount;
+                *balanceAmount = bank.checkAccountBalance(accId);
+                this->printer(BALANCE,args,balanceAmount);
+            }
+            else{
+                this->printer(passCheckRes, args, amount_getter);
+            }
+        }
+    }
+    else if(!strcmp(cmd,"Q")){
+        if(accountExistance == ACC_EXISTS){
+            Message passCheckRes = bank.checkPass(accId,accPass);
+            if(passCheckRes == PASSWORD_CURR){
+                Message retMsg = bank.deleteAccount(accId,amount_getter);
+                this->printer(retMsg,args,amount_getter);
+            }
+            else{
+                this->printer(passCheckRes,args,amount_getter);
+            }
+        }
+    }
+    else if(!strcmp(cmd,"T")){
+        int targetId = atoi(args[3]);
+        int amount = atoi(args[4]);
+        Message targetExists = bank.doesAccountExist(targetId);
+        if(accountExistance!=ACC_EXISTS){
+            return ACC_DOESNT_EXIST;
+        }
+        else if(targetExists==ACC_EXISTS){
+
+        }
+        else{
+            return TARGET_DOESNT_EXIST;
         }
     }
     return SUCCESS;
@@ -122,7 +169,7 @@ void ATM::printer(Message printMsg, char* args[],int *amount_getter){
     case WITHDREW_MONEY:
         lineToPrint << this->atmId << ": Account " << args[1] <<
         " new balance is " << amount_getter << " after "
-        << args[3] << " withdrew";
+        << args[3] << " $ was withdrew";
         break;
     case INSUFFICIANT_FUNDS:
         lineToPrint <<"Error "<<this->atmId <<
@@ -133,7 +180,17 @@ void ATM::printer(Message printMsg, char* args[],int *amount_getter){
         lineToPrint << "Error" << this->atmId<<": Your transaction failed - "
         << "password for account id" << args[1] << "is incorrect";
         break;
-
+    case DEPOSITED_MONEY:
+        lineToPrint << this->atmId << ":Account " << args[1] << "new balance"<<
+        "is " << amount_getter << " after " << args[3] << " $ was deposited";
+        break;
+    case BALANCE:
+        lineToPrint << ": Account " << args[1] << " balance is " 
+        << amount_getter;
+        break;
+    case ACCOUNT_DELETED:
+        lineToPrint<<this->atmId<<": Account "<<args[1] << " is now closed"<<
+        " balance was " << amount_getter;
     default:
         break;
     }

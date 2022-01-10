@@ -1,1 +1,5 @@
 In this program we will implement an ATM with bank accounts.
+Course staff: having to write things like "amount X was withdrew" and
+"account X new balance is". The exercise is difficult and complex and shows 
+skills but if a potential recruiter was to examine\run it and see mistakes in 
+the English, I think it might affect their overall opinion on the candidate.

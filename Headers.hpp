@@ -30,7 +30,7 @@ using std::strlen;
 using std::ofstream;
 using std::stringstream;
 
-typedef enum{
+typedef enum Messageflags{
     SUCCESS,
     PASSWORD_ERR,
     AMOUNT_ERR,
@@ -42,10 +42,14 @@ typedef enum{
     PASSWORD_CURR,
     WITHDREW_MONEY,
     INSUFFICIANT_FUNDS,
-    DEPOSITED_MONEY
+    DEPOSITED_MONEY,
+    BALANCE,
+    ACCOUNT_DELETED,
+    TRANSFER_SUCCESS,
+    TARGET_DOESNT_EXIST
 }Message;
 
-typedef enum{
+typedef enum Actionflags{
         WITHDRAW,
         DEPOSIT
 }Action;

@@ -19,6 +19,7 @@ public:
     Message openAccount(int account_id, int password, int balance);
     void balanceSetter(int amount, Action action);
     int balanceGetter();
+    int passwordGetter();
 };
 
 #endif

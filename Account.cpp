@@ -15,3 +15,7 @@ void Account::balanceSetter(int amount, Action action){
         this->acc_par.balance += amount;
     }
 }
+
+int Account::passwordGetter(){
+    return this->acc_par.password;
+}
