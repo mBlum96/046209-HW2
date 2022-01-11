@@ -3,6 +3,8 @@
 
 #include "Headers.hpp"
 #include "Account.hpp"
+#include "Log.hpp"
+#include "fairLock.hpp"
 
 
 using namespace std;
@@ -12,11 +14,15 @@ class Bank
 private:
     unordered_map<int, Account> account_map;
     int bankBalance;
-    pthread_mutex_t logLock;
-    sem_t accountReadLock;
-    pthread_mutex_t accountWriteLock;
+    //pthread_mutex_t logLock;
+    //sem_t accountReadLock;
+    //pthread_mutex_t accountWriteLock;
+    fairLock fLock;
+    Log &log;
+     
 public:
     Bank();
+    Bank(Log &log, fairLock &fLock);
     ~Bank();
     Message openAccount(const int accId,const int accPass,
     const int initAmount);
