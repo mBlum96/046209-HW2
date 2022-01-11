@@ -6,11 +6,11 @@ Bank::Bank(Log &log, fairLock &fLock):log(log),fLock(fLock){
 
 Message Bank::doesAccountExist(const int accId){
     
-    fLock.enterWriter();
+    fLock.enterReader();
     if(account_map.find(accId)!=account_map.end()){
         return ACC_EXISTS;
     }
-    fLock.leaveWriter();
+    fLock.leaverReader();
     sleep(1);
     return ACC_DOESNT_EXIST;
 }
@@ -64,10 +64,10 @@ int Bank::checkAccountBalance(int accId){
 Message Bank::checkPass(const int accId, const int accPass){
     try
     {
-        fLock.enterWriter();
+        fLock.enterReader();
         auto it = account_map.find(accId);
         if(it->second.passwordGetter()==accPass){
-            fLock.leaveWriter();
+            fLock.leaverReader();
             sleep(1);
             return PASSWORD_CURR;
         }
@@ -77,11 +77,11 @@ Message Bank::checkPass(const int accId, const int accPass){
     }
     catch(...)
     {
-        fLock.leaveWriter();
+        fLock.leaverReader();
         sleep(1);
         return PASSWORD_ERR;
     }
-    fLock.leaveWriter();
+    fLock.leaverReader();
     sleep(1);
     return PASSWORD_ERR;
 }

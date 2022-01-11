@@ -16,6 +16,7 @@
 
 //locks:
 #include "pthread.h"
+#include "semaphore.h"
 
 //time:
 #include <unistd.h>
@@ -30,7 +31,7 @@ using std::strlen;
 using std::ofstream;
 using std::stringstream;
 
-typedef enum Messageflags{
+typedef enum Message{
     SUCCESS,
     PASSWORD_ERR,
     AMOUNT_ERR,
@@ -49,7 +50,7 @@ typedef enum Messageflags{
     TARGET_DOESNT_EXIST
 }Message;
 
-typedef enum Actionflags{
+typedef enum Action{
         WITHDRAW,
         DEPOSIT
 }Action;
