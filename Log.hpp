@@ -12,7 +12,7 @@ public:
     Log(const char *filename);
     ~Log();
 
-    void Log::writeLine(string newLine);
+    void writeLine(string newLine);
     void writeStream(stringstream &newStream);
 };
 

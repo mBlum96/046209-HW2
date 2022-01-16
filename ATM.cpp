@@ -3,13 +3,17 @@
 #include "Bank.hpp"
 #include "Log.hpp"
 
-#define MAX_LINE_SIZE 0//to be determined
-#define MAX_ARGS 0//to be determined
+#define MAX_LINE_SIZE 255//to be determined
+#define MAX_ARGS 5//to be determined
 
 
 
-ATM::ATM(int atmId, Bank &bank):atmId(atmId), bank(bank){
+ATM::ATM(int atmId, Bank &bank, string atmFile):
+atmId(atmId), bank(bank), atmFile(atmFile){
 
+}
+ATM::~ATM(){
+    bank.~Bank();
 }
 
 void ATM::welcome(){
@@ -45,7 +49,7 @@ void ATM::welcome(){
     <<endl;
 }
 
-void ATM::run(int argc, char* argv[]){
+void ATM::run(){
     char line_input[MAX_LINE_SIZE];
     /*char cmd_string[strlen(line_input)-1]={'\0'};*/
     while(1){
@@ -53,6 +57,9 @@ void ATM::run(int argc, char* argv[]){
         fgets(line_input, MAX_LINE_SIZE, stdin);
 
         Message printMsg = this->executeLine(line_input);
+        if(printMsg!=SUCCESS){
+            perror("failed printing atm data");
+        }
 
         line_input[0] = '\0'; //initialized for next line read
     }
@@ -63,7 +70,10 @@ Message ATM::executeLine(char* line_input/*, char* cmd_stirng*/){
     char* cmd;
     char* args[MAX_ARGS];
     char delimmiters[4] = " \t\n";
-    int *amount_getter;
+    int abstract_amount = -1; //compiler threw warning of using amount getter
+    // "uninitialized"
+
+    int *amount_getter = &abstract_amount;
     string delimitered_command = {'\0'};
     cmd = strtok(line_input, delimmiters);
     /*if(cmd==NULL){
@@ -116,7 +126,9 @@ Message ATM::executeLine(char* line_input/*, char* cmd_stirng*/){
         if(accountExistance == ACC_EXISTS){
             Message passCheckRes = bank.checkPass(accId,accPass);
             if(passCheckRes==PASSWORD_CURR){
-                int *balanceAmount;
+                int abstract_balance = -1;//compiler threw "uninitialized" on 
+                //balanceAmount
+                int *balanceAmount = &abstract_balance;
                 *balanceAmount = bank.checkAccountBalance(accId);
                 this->printer(BALANCE,args,balanceAmount);
             }
@@ -145,7 +157,9 @@ Message ATM::executeLine(char* line_input/*, char* cmd_stirng*/){
             return ACC_DOESNT_EXIST;
         }
         else if(targetExists==ACC_EXISTS){
-
+            Message retMsg = bank.transfer(
+                accId,accPass,targetId,amount,amount_getter);
+            printer(retMsg,args,amount_getter);
         }
         else{
             return TARGET_DOESNT_EXIST;
@@ -159,39 +173,77 @@ void ATM::printer(Message printMsg, char* args[],int *amount_getter){
     switch (printMsg)
     {
     case FAILED_OPENING_ACC:
+    {
         lineToPrint << "Error " << this->atmId << ": Your transaction failed "
         <<"- account with the same id existss";
         break;
+    }
     case CREATED_NEW_ACC:
+    {
         lineToPrint << this->atmId << ": New account id is " << args[1]
         <<"with password " << args[2] << " and initial balance " << args[3];
         break;
+    }
     case WITHDREW_MONEY:
+    {
         lineToPrint << this->atmId << ": Account " << args[1] <<
         " new balance is " << amount_getter << " after "
         << args[3] << " $ was withdrew";
         break;
+    }
     case INSUFFICIANT_FUNDS:
+    {
         lineToPrint <<"Error "<<this->atmId <<
         ": Your transaction failed - account id"<<args[1]
         << "balance is lower than " << args[3];
         break;
+    }
     case PASSWORD_ERR:
+    {
         lineToPrint << "Error" << this->atmId<<": Your transaction failed - "
         << "password for account id" << args[1] << "is incorrect";
         break;
+    }
     case DEPOSITED_MONEY:
+    {
         lineToPrint << this->atmId << ":Account " << args[1] << "new balance"<<
         "is " << amount_getter << " after " << args[3] << " $ was deposited";
         break;
+    }
     case BALANCE:
+    {
         lineToPrint << ": Account " << args[1] << " balance is " 
         << amount_getter;
         break;
+    }
     case ACCOUNT_DELETED:
+    {
         lineToPrint<<this->atmId<<": Account "<<args[1] << " is now closed"<<
         " balance was " << amount_getter;
-    default:
         break;
+    }
+    case TARGET_DOESNT_EXIST:
+    {
+        lineToPrint << "Error " << atmId <<
+         ": Your transaction failed - account id" <<
+          args[3] << " does not exist";
+        break;
+    }
+    case TRANSFER_SUCCESS:
+    {
+        int org_amount = -1;
+        org_amount = bank.checkAccountBalance(atoi(args[1]));
+        lineToPrint << atmId << ": Transfer " << args[4] << " from account "<<
+        args[1] << " to account " << args[3] << " new account balance is " <<
+        org_amount << " new target account balance is " << amount_getter;
+        break;
+    }
+    default:
+    {
+        break;
+    }
+    }
+    if(lineToPrint.str().size() > 0){
+        bank.logGetter().writeStream(lineToPrint);
     }
 }

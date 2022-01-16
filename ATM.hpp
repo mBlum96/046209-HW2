@@ -2,7 +2,7 @@
 #define __ATM_H
 //includes:
 #include "Headers.hpp"
-
+#include "Bank.hpp"
 /*-----------------------------------------------------------------------------
         Auxiliary stractures
 -----------------------------------------------------------------------------*/        
@@ -16,11 +16,12 @@ class ATM{
 private:
     int atmId;
     Bank &bank;
+    string atmFile;
 public:
-    ATM(int atmId, Bank &bank);
+    ATM(int atmId, Bank &bank, string atmFile);
     ~ATM();
     void print_welcome_message();
-    void run(int argc, char* argv[]);
+    void run();
     Message executeLine(char* line_input);
     void welcome();
     void printer(Message printMsg, char* args[], int *amount_getter);

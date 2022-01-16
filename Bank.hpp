@@ -4,7 +4,7 @@
 #include "Headers.hpp"
 #include "Account.hpp"
 #include "Log.hpp"
-#include "fairLock.hpp"
+#include "myMutexLock.hpp"
 
 
 using namespace std;
@@ -17,12 +17,13 @@ private:
     //pthread_mutex_t logLock;
     //sem_t accountReadLock;
     //pthread_mutex_t accountWriteLock;
-    fairLock fLock;
-    Log &log;
+    myMutexLock mLock;
+    pthread_mutex_t commissionLock;
+    Log &bankLog;
      
 public:
-    Bank();
-    Bank(Log &log, fairLock &fLock);
+    //Bank();
+    Bank(Log &log);
     ~Bank();
     Message openAccount(const int accId,const int accPass,
     const int initAmount);
@@ -33,7 +34,12 @@ public:
     Message deleteAccount(const int accId, int *amount_getter);
     Message transfer(const int sourceId, const int sourcePass,
     const int targetId, const int amount, int *amount_getter);
+    void collectCommission();
     int checkAccountBalance(const int accId);
+    void commissionPrinter(Message message, int* ammount_getter,
+    int commission, int acc_id, int desired_amnt);
+    void printSnapshot();
+    Log& logGetter();
 };
 
 
