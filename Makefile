@@ -24,6 +24,6 @@ depend: .depend
 	$(CXX) $(CXXFLAGS) -MM $^>>./.depend;
 
 clean:
-	$(RM) $(OBJS)
+	$(RM) $(OBJS) $(TARGET)
 
 include .depend
