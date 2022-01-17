@@ -66,7 +66,9 @@ typedef enum Action{
 }Action;
 
 typedef enum Times{
-        BANK_UPDATE_INTERVAL = 500000
+        BANK_UPDATE_INTERVAL = 500000,
+        ATM_SLEEP_INTERVAL = 100000,
+        BANK_COMMISSION_INTERVAL = 3
 }Times;
 
 typedef enum Boolean{

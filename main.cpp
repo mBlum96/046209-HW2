@@ -13,16 +13,18 @@ void* atmStartRoutine(void* ATMinput){
 }
 void* bankCommissionStartRoutine(void* bankInput){
     Bank &bank = *(Bank*) bankInput;
-    while(all_atm_handeled==FALSE){
+    while(all_atm_handeled!=TRUE){
         bank.collectCommission();
-        usleep(BANK_UPDATE_INTERVAL);
+        sleep(BANK_COMMISSION_INTERVAL);
     }
     pthread_exit(NULL);
 }
 
 void* bankPrintStartRoutine(void* printInput){
     Bank &bank = *(Bank*) printInput;
-    while(all_atm_handeled==FALSE){
+    usleep (BANK_UPDATE_INTERVAL);
+    while(all_atm_handeled!=TRUE){
+       // cout<<"***************Im here*****************"<<endl;
         usleep (BANK_UPDATE_INTERVAL);
         bank.printSnapshot();
     }
@@ -51,6 +53,13 @@ int main(int argc, char* argv[]){
         i++;
     }
 
+    pthread_t bankPrintThread;
+
+    if(pthread_create(
+        &bankPrintThread,NULL,bankPrintStartRoutine,(void*)&bank)!=0){
+        perror("failed to create bank print routine");
+    }
+
     pthread_t commissionThread;
 
     if(pthread_create(
@@ -58,12 +67,6 @@ int main(int argc, char* argv[]){
         perror("failed to create commission thread");
     }
     
-    pthread_t bankPrintThread;
-
-    if(pthread_create(
-        &bankPrintThread,NULL,bankPrintStartRoutine,(void*)&bank)!=0){
-        perror("failed to create bank print routine");
-    }
 
     for(auto thread : atmThreads){
         pthread_join(thread, NULL);

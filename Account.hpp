@@ -13,6 +13,7 @@ class Account
 {
 private:
     Account_params acc_par;
+    pthread_mutex_t accLock;
 public:
     Account(Account_params acc_par);
     ~Account();

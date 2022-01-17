@@ -1,0 +1,178 @@
+==24808== Memcheck, a memory error detector
+==24808== Copyright (C) 2002-2017, and GNU GPL'd, by Julian Seward et al.
+==24808== Using Valgrind-3.13.0 and LibVEX; rerun with -h for copyright info
+==24808== Command: ./Bank 1 ./ATM_0_input_file.txt
+==24808== Parent PID: 16590
+==24808== 
+--24808-- 
+--24808-- Valgrind options:
+--24808--    -v
+--24808--    --leak-check=full
+--24808--    --log-file=valgrind-out.txt
+--24808--    --leak-check=full
+--24808--    --show-leak-kinds=all
+--24808-- Contents of /proc/version:
+--24808--   Linux version 5.4.0-84-generic (buildd@lcy01-amd64-007) (gcc version 7.5.0 (Ubuntu 7.5.0-3ubuntu1~18.04)) #94~18.04.1-Ubuntu SMP Thu Aug 26 23:17:46 UTC 2021
+--24808-- 
+--24808-- Arch and hwcaps: AMD64, LittleEndian, amd64-cx16-lzcnt-rdtscp-sse3-avx-avx2-bmi
+--24808-- Page sizes: currently 4096, max supported 4096
+--24808-- Valgrind library directory: /usr/lib/valgrind
+--24808-- Reading syms from /home/michael/Desktop/opSysNotLab/046209-HW2/Bank
+--24808-- Reading syms from /lib/x86_64-linux-gnu/ld-2.27.so
+--24808--   Considering /lib/x86_64-linux-gnu/ld-2.27.so ..
+--24808--   .. CRC mismatch (computed 0ef8daab wanted 65bccefe)
+--24808--   Considering /usr/lib/debug/lib/x86_64-linux-gnu/ld-2.27.so ..
+--24808--   .. CRC is valid
+--24808-- Reading syms from /usr/lib/valgrind/memcheck-amd64-linux
+--24808--   Considering /usr/lib/valgrind/memcheck-amd64-linux ..
+--24808--   .. CRC mismatch (computed 41ddb025 wanted 9972f546)
+--24808--    object doesn't have a symbol table
+--24808--    object doesn't have a dynamic symbol table
+--24808-- Scheduler: using generic scheduler lock implementation.
+--24808-- Reading suppressions file: /usr/lib/valgrind/default.supp
+==24808== embedded gdbserver: reading from /tmp/vgdb-pipe-from-vgdb-to-24808-by-michael-on-???
+==24808== embedded gdbserver: writing to   /tmp/vgdb-pipe-to-vgdb-from-24808-by-michael-on-???
+==24808== embedded gdbserver: shared mem   /tmp/vgdb-pipe-shared-mem-vgdb-24808-by-michael-on-???
+==24808== 
+==24808== TO CONTROL THIS PROCESS USING vgdb (which you probably
+==24808== don't want to do, unless you know exactly what you're doing,
+==24808== or are doing some strange experiment):
+==24808==   /usr/lib/valgrind/../../bin/vgdb --pid=24808 ...command...
+==24808== 
+==24808== TO DEBUG THIS PROCESS USING GDB: start GDB like this
+==24808==   /path/to/gdb ./Bank
+==24808== and then give GDB the following command
+==24808==   target remote | /usr/lib/valgrind/../../bin/vgdb --pid=24808
+==24808== --pid is optional if only one valgrind process is running
+==24808== 
+--24808-- REDIR: 0x4020d20 (ld-linux-x86-64.so.2:strlen) redirected to 0x580608c1 (???)
+--24808-- REDIR: 0x4020b00 (ld-linux-x86-64.so.2:index) redirected to 0x580608db (???)
+--24808-- Reading syms from /usr/lib/valgrind/vgpreload_core-amd64-linux.so
+--24808--   Considering /usr/lib/valgrind/vgpreload_core-amd64-linux.so ..
+--24808--   .. CRC mismatch (computed 50df1b30 wanted 4800a4cf)
+--24808--    object doesn't have a symbol table
+--24808-- Reading syms from /usr/lib/valgrind/vgpreload_memcheck-amd64-linux.so
+--24808--   Considering /usr/lib/valgrind/vgpreload_memcheck-amd64-linux.so ..
+--24808--   .. CRC mismatch (computed f893b962 wanted 95ee359e)
+--24808--    object doesn't have a symbol table
+==24808== WARNING: new redirection conflicts with existing -- ignoring it
+--24808--     old: 0x04020d20 (strlen              ) R-> (0000.0) 0x580608c1 ???
+--24808--     new: 0x04020d20 (strlen              ) R-> (2007.0) 0x04c34db0 strlen
+--24808-- REDIR: 0x401d540 (ld-linux-x86-64.so.2:strcmp) redirected to 0x4c35ee0 (strcmp)
+--24808-- REDIR: 0x4021260 (ld-linux-x86-64.so.2:mempcpy) redirected to 0x4c394f0 (mempcpy)
+--24808-- Reading syms from /lib/x86_64-linux-gnu/libgcc_s.so.1
+--24808--    object doesn't have a symbol table
+--24808-- Reading syms from /lib/x86_64-linux-gnu/libpthread-2.27.so
+--24808--   Considering /usr/lib/debug/.build-id/68/f36706eb2e6eee4046c4fdca2a19540b2f6113.debug ..
+--24808--   .. build-id is valid
+--24808-- Reading syms from /lib/x86_64-linux-gnu/libc-2.27.so
+--24808--   Considering /lib/x86_64-linux-gnu/libc-2.27.so ..
+--24808--   .. CRC mismatch (computed cb654923 wanted 8713c55a)
+--24808--   Considering /usr/lib/debug/lib/x86_64-linux-gnu/libc-2.27.so ..
+--24808--   .. CRC is valid
+--24808-- REDIR: 0x5313b70 (libc.so.6:memmove) redirected to 0x4a2c6e0 (_vgnU_ifunc_wrapper)
+--24808-- REDIR: 0x5312e80 (libc.so.6:strncpy) redirected to 0x4a2c6e0 (_vgnU_ifunc_wrapper)
+--24808-- REDIR: 0x5313e50 (libc.so.6:strcasecmp) redirected to 0x4a2c6e0 (_vgnU_ifunc_wrapper)
+--24808-- REDIR: 0x53128d0 (libc.so.6:strcat) redirected to 0x4a2c6e0 (_vgnU_ifunc_wrapper)
+--24808-- REDIR: 0x5312eb0 (libc.so.6:rindex) redirected to 0x4a2c6e0 (_vgnU_ifunc_wrapper)
+--24808-- REDIR: 0x53155a0 (libc.so.6:rawmemchr) redirected to 0x4a2c6e0 (_vgnU_ifunc_wrapper)
+--24808-- REDIR: 0x5313ce0 (libc.so.6:mempcpy) redirected to 0x4a2c6e0 (_vgnU_ifunc_wrapper)
+--24808-- REDIR: 0x5313b10 (libc.so.6:bcmp) redirected to 0x4a2c6e0 (_vgnU_ifunc_wrapper)
+--24808-- REDIR: 0x5312e40 (libc.so.6:strncmp) redirected to 0x4a2c6e0 (_vgnU_ifunc_wrapper)
+--24808-- REDIR: 0x5312940 (libc.so.6:strcmp) redirected to 0x4a2c6e0 (_vgnU_ifunc_wrapper)
+--24808-- REDIR: 0x5313c40 (libc.so.6:memset) redirected to 0x4a2c6e0 (_vgnU_ifunc_wrapper)
+--24808-- REDIR: 0x5330ed0 (libc.so.6:wcschr) redirected to 0x4a2c6e0 (_vgnU_ifunc_wrapper)
+--24808-- REDIR: 0x5312de0 (libc.so.6:strnlen) redirected to 0x4a2c6e0 (_vgnU_ifunc_wrapper)
+--24808-- REDIR: 0x53129b0 (libc.so.6:strcspn) redirected to 0x4a2c6e0 (_vgnU_ifunc_wrapper)
+--24808-- REDIR: 0x5313ea0 (libc.so.6:strncasecmp) redirected to 0x4a2c6e0 (_vgnU_ifunc_wrapper)
+--24808-- REDIR: 0x5312980 (libc.so.6:strcpy) redirected to 0x4a2c6e0 (_vgnU_ifunc_wrapper)
+--24808-- REDIR: 0x5313fe0 (libc.so.6:memcpy@@GLIBC_2.14) redirected to 0x4a2c6e0 (_vgnU_ifunc_wrapper)
+--24808-- REDIR: 0x5312ee0 (libc.so.6:strpbrk) redirected to 0x4a2c6e0 (_vgnU_ifunc_wrapper)
+--24808-- REDIR: 0x5312900 (libc.so.6:index) redirected to 0x4a2c6e0 (_vgnU_ifunc_wrapper)
+--24808-- REDIR: 0x5312db0 (libc.so.6:strlen) redirected to 0x4a2c6e0 (_vgnU_ifunc_wrapper)
+--24808-- REDIR: 0x531d4a0 (libc.so.6:memrchr) redirected to 0x4a2c6e0 (_vgnU_ifunc_wrapper)
+--24808-- REDIR: 0x5313ef0 (libc.so.6:strcasecmp_l) redirected to 0x4a2c6e0 (_vgnU_ifunc_wrapper)
+--24808-- REDIR: 0x5313ae0 (libc.so.6:memchr) redirected to 0x4a2c6e0 (_vgnU_ifunc_wrapper)
+--24808-- REDIR: 0x5331c90 (libc.so.6:wcslen) redirected to 0x4a2c6e0 (_vgnU_ifunc_wrapper)
+--24808-- REDIR: 0x5313190 (libc.so.6:strspn) redirected to 0x4a2c6e0 (_vgnU_ifunc_wrapper)
+--24808-- REDIR: 0x5313e20 (libc.so.6:stpncpy) redirected to 0x4a2c6e0 (_vgnU_ifunc_wrapper)
+--24808-- REDIR: 0x5313df0 (libc.so.6:stpcpy) redirected to 0x4a2c6e0 (_vgnU_ifunc_wrapper)
+--24808-- REDIR: 0x53155d0 (libc.so.6:strchrnul) redirected to 0x4a2c6e0 (_vgnU_ifunc_wrapper)
+--24808-- REDIR: 0x5313f40 (libc.so.6:strncasecmp_l) redirected to 0x4a2c6e0 (_vgnU_ifunc_wrapper)
+--24808-- REDIR: 0x5403300 (libc.so.6:__strrchr_avx2) redirected to 0x4c34730 (rindex)
+--24808-- REDIR: 0x54034d0 (libc.so.6:__strlen_avx2) redirected to 0x4c34cf0 (strlen)
+--24808-- REDIR: 0x53ffae0 (libc.so.6:__memcmp_avx2_movbe) redirected to 0x4c37e00 (bcmp)
+--24808-- REDIR: 0x531ec50 (libc.so.6:__strcmp_sse2_unaligned) redirected to 0x4c35da0 (strcmp)
+--24808-- REDIR: 0x530c140 (libc.so.6:malloc) redirected to 0x4c31aa0 (malloc)
+--24808-- REDIR: 0x53136c0 (libc.so.6:__GI_strstr) redirected to 0x4c39760 (__strstr_sse2)
+--24808-- REDIR: 0x124250 (NONE:operator new[](unsigned long)) redirected to 0x4c32830 (operator new[](unsigned long))
+--24808-- REDIR: 0x1252b0 (NONE:operator new(unsigned long)) redirected to 0x4c32110 (operator new(unsigned long))
+--24808-- REDIR: 0x5403a10 (libc.so.6:__memcpy_avx_unaligned_erms) redirected to 0x4c386e0 (memmove)
+--24808-- REDIR: 0x124240 (NONE:operator delete(void*)) redirected to 0x4c331d0 (operator delete(void*))
+--24808-- REDIR: 0x5403e90 (libc.so.6:__memset_avx2_unaligned_erms) redirected to 0x4c385d0 (memset)
+--24808-- REDIR: 0x530f170 (libc.so.6:calloc) redirected to 0x4c33a70 (calloc)
+==24808== Thread 2:
+==24808== Invalid read of size 8
+==24808==    at 0x4C387E0: memmove (in /usr/lib/valgrind/vgpreload_memcheck-amd64-linux.so)
+==24808==    by 0x16F17E: void std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::_M_construct<char*>(char*, char*, std::forward_iterator_tag) (in /home/michael/Desktop/opSysNotLab/046209-HW2/Bank)
+==24808==    by 0x16F1BE: std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::basic_string(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) (in /home/michael/Desktop/opSysNotLab/046209-HW2/Bank)
+==24808==    by 0x11D8CC: ATM::ATM(ATM const&) (ATM.hpp:15)
+==24808==    by 0x11D238: atmStartRoutine(void*) (main.cpp:10)
+==24808==    by 0x505D6DA: start_thread (pthread_create.c:463)
+==24808==    by 0x539671E: clone (clone.S:95)
+==24808==  Address 0x567a120 is 0 bytes inside a block of size 23 free'd
+==24808==    at 0x4C3323B: operator delete(void*) (in /usr/lib/valgrind/vgpreload_memcheck-amd64-linux.so)
+==24808==    by 0x11E859: ATM::~ATM() (ATM.cpp:15)
+==24808==    by 0x11D58A: main (main.cpp:48)
+==24808==  Block was alloc'd at
+==24808==    at 0x4C3217F: operator new(unsigned long) (in /usr/lib/valgrind/vgpreload_memcheck-amd64-linux.so)
+==24808==    by 0x16F164: void std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::_M_construct<char*>(char*, char*, std::forward_iterator_tag) (in /home/michael/Desktop/opSysNotLab/046209-HW2/Bank)
+==24808==    by 0x16F1BE: std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::basic_string(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) (in /home/michael/Desktop/opSysNotLab/046209-HW2/Bank)
+==24808==    by 0x11D8CC: ATM::ATM(ATM const&) (ATM.hpp:15)
+==24808==    by 0x11D526: main (main.cpp:48)
+==24808== 
+==24808== Invalid read of size 2
+==24808==    at 0x4C38750: memmove (in /usr/lib/valgrind/vgpreload_memcheck-amd64-linux.so)
+==24808==    by 0x16F17E: void std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::_M_construct<char*>(char*, char*, std::forward_iterator_tag) (in /home/michael/Desktop/opSysNotLab/046209-HW2/Bank)
+==24808==    by 0x16F1BE: std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::basic_string(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) (in /home/michael/Desktop/opSysNotLab/046209-HW2/Bank)
+==24808==    by 0x11D8CC: ATM::ATM(ATM const&) (ATM.hpp:15)
+==24808==    by 0x11D238: atmStartRoutine(void*) (main.cpp:10)
+==24808==    by 0x505D6DA: start_thread (pthread_create.c:463)
+==24808==    by 0x539671E: clone (clone.S:95)
+==24808==  Address 0x567a130 is 16 bytes inside a block of size 23 free'd
+==24808==    at 0x4C3323B: operator delete(void*) (in /usr/lib/valgrind/vgpreload_memcheck-amd64-linux.so)
+==24808==    by 0x11E859: ATM::~ATM() (ATM.cpp:15)
+==24808==    by 0x11D58A: main (main.cpp:48)
+==24808==  Block was alloc'd at
+==24808==    at 0x4C3217F: operator new(unsigned long) (in /usr/lib/valgrind/vgpreload_memcheck-amd64-linux.so)
+==24808==    by 0x16F164: void std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::_M_construct<char*>(char*, char*, std::forward_iterator_tag) (in /home/michael/Desktop/opSysNotLab/046209-HW2/Bank)
+==24808==    by 0x16F1BE: std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::basic_string(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) (in /home/michael/Desktop/opSysNotLab/046209-HW2/Bank)
+==24808==    by 0x11D8CC: ATM::ATM(ATM const&) (ATM.hpp:15)
+==24808==    by 0x11D526: main (main.cpp:48)
+==24808== 
+==24808== Invalid read of size 2
+==24808==    at 0x4C3875F: memmove (in /usr/lib/valgrind/vgpreload_memcheck-amd64-linux.so)
+==24808==    by 0x16F17E: void std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::_M_construct<char*>(char*, char*, std::forward_iterator_tag) (in /home/michael/Desktop/opSysNotLab/046209-HW2/Bank)
+==24808==    by 0x16F1BE: std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::basic_string(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) (in /home/michael/Desktop/opSysNotLab/046209-HW2/Bank)
+==24808==    by 0x11D8CC: ATM::ATM(ATM const&) (ATM.hpp:15)
+==24808==    by 0x11D238: atmStartRoutine(void*) (main.cpp:10)
+==24808==    by 0x505D6DA: start_thread (pthread_create.c:463)
+==24808==    by 0x539671E: clone (clone.S:95)
+==24808==  Address 0x567a134 is 20 bytes inside a block of size 23 free'd
+==24808==    at 0x4C3323B: operator delete(void*) (in /usr/lib/valgrind/vgpreload_memcheck-amd64-linux.so)
+==24808==    by 0x11E859: ATM::~ATM() (ATM.cpp:15)
+==24808==    by 0x11D58A: main (main.cpp:48)
+==24808==  Block was alloc'd at
+==24808==    at 0x4C3217F: operator new(unsigned long) (in /usr/lib/valgrind/vgpreload_memcheck-amd64-linux.so)
+==24808==    by 0x16F164: void std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::_M_construct<char*>(char*, char*, std::forward_iterator_tag) (in /home/michael/Desktop/opSysNotLab/046209-HW2/Bank)
+==24808==    by 0x16F1BE: std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::basic_string(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) (in /home/michael/Desktop/opSysNotLab/046209-HW2/Bank)
+==24808==    by 0x11D8CC: ATM::ATM(ATM const&) (ATM.hpp:15)
+==24808==    by 0x11D526: main (main.cpp:48)
+==24808== 
+--24808-- REDIR: 0x53ff360 (libc.so.6:__memchr_avx2) redirected to 0x4c35f80 (memchr)
+--24808-- REDIR: 0x532b320 (libc.so.6:__strcpy_sse2_unaligned) redirected to 0x4c34dd0 (strcpy)
+--24808-- REDIR: 0x53ff240 (libc.so.6:__strspn_sse42) redirected to 0x4c39990 (strspn)
+--24808-- REDIR: 0x53fefb0 (libc.so.6:__strcspn_sse42) redirected to 0x4c398d0 (strcspn)
+--24808-- REDIR: 0x530ca30 (libc.so.6:free) redirected to 0x4c32cd0 (free)
+--24808-- REDIR: 0x54039f0 (libc.so.6:__mempcpy_avx_unaligned_erms) redirected to 0x4c39130 (mempcpy)
+--24808-- REDIR: 0x123cb0 (NONE:operator delete[](void*)) redirected to 0x4c336d0 (operator delete[](void*))

@@ -4,7 +4,7 @@
 TARGET := Bank
 
 CXX := g++
-CXXFLAGS := -std=c++11 -g -Wall -pedantic-errors -lpthread -pthread # we added "-pthread"
+CXXFLAGS := -std=c++11 -o0 -ggdb3 -Wall -pedantic-errors -lpthread -pthread # we added "-pthread"
 LDFLAGS := -lpthread -static-libstdc++
 RM := rm -f
 

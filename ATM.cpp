@@ -50,19 +50,39 @@ void ATM::welcome(){
 }
 
 void ATM::run(){
-    char line_input[MAX_LINE_SIZE];
-    /*char cmd_string[strlen(line_input)-1]={'\0'};*/
-    while(1){
-        cout << "> ";
-        fgets(line_input, MAX_LINE_SIZE, stdin);
-
-        Message printMsg = this->executeLine(line_input);
+    //char line_input[MAX_LINE_SIZE];
+    // ifstream file(atmFile.c_str());
+    ifstream file(atmFile);
+    string holder;
+    while(getline(file,holder)){
+        int line_len = holder.length();
+        char* command = new char[line_len+1];
+        strcpy(command,holder.c_str());
+        Message printMsg = this->executeLine(command);
         if(printMsg!=SUCCESS){
+            delete[] command;
             perror("failed printing atm data");
+            return;
         }
-
-        line_input[0] = '\0'; //initialized for next line read
+        //command[0] = '\0'; //initialized for next line read
+        //cout<< "I be printin"<<endl;
+        delete[] command;
+        usleep(ATM_SLEEP_INTERVAL);
     }
+////    while
+    /*char cmd_string[strlen(line_input)-1]={'\0'};*/
+/////    while(cin.getline(line_input,MAX_LINE_SIZE)){
+/////        cout << "> ";
+/////        fgets(line_input, MAX_LINE_SIZE, stdin);
+/////
+/////        Message printMsg = this->executeLine(line_input);
+/////        if(printMsg!=SUCCESS){
+/////            perror("failed printing atm data");
+/////        }
+/////
+/////        line_input[0] = '\0'; //initialized for next line read
+/////    }
+
 }
 
 Message ATM::executeLine(char* line_input/*, char* cmd_stirng*/){
@@ -101,7 +121,7 @@ Message ATM::executeLine(char* line_input/*, char* cmd_stirng*/){
             }
             return FAILED_OPENING_ACC;
         }
-        else if(!strcmp(cmd,"W")||!strcmp(cmd,"D")){
+        else if((!strcmp(cmd,"W"))||(!strcmp(cmd,"D"))){
             if(accountExistance == ACC_EXISTS){
                 Message passCheckRes = bank.checkPass(accId,accPass);
                 if(passCheckRes == PASSWORD_CURR){
@@ -181,13 +201,13 @@ void ATM::printer(Message printMsg, char* args[],int *amount_getter){
     case CREATED_NEW_ACC:
     {
         lineToPrint << this->atmId << ": New account id is " << args[1]
-        <<"with password " << args[2] << " and initial balance " << args[3];
+        <<" with password " << args[2] << " and initial balance " << args[3];
         break;
     }
     case WITHDREW_MONEY:
     {
         lineToPrint << this->atmId << ": Account " << args[1] <<
-        " new balance is " << amount_getter << " after "
+        " new balance is " << *amount_getter << " after "
         << args[3] << " $ was withdrew";
         break;
     }
@@ -206,8 +226,8 @@ void ATM::printer(Message printMsg, char* args[],int *amount_getter){
     }
     case DEPOSITED_MONEY:
     {
-        lineToPrint << this->atmId << ":Account " << args[1] << "new balance"<<
-        "is " << amount_getter << " after " << args[3] << " $ was deposited";
+        lineToPrint << this->atmId<< " :Account " << args[1]<<" new balance "<<
+        "is " << bank.checkAccountBalance(atoi(args[1])) << " after " << args[3] << " $ was deposited";
         break;
     }
     case BALANCE:
@@ -219,7 +239,7 @@ void ATM::printer(Message printMsg, char* args[],int *amount_getter){
     case ACCOUNT_DELETED:
     {
         lineToPrint<<this->atmId<<": Account "<<args[1] << " is now closed"<<
-        " balance was " << amount_getter;
+        " balance was " << *amount_getter;
         break;
     }
     case TARGET_DOESNT_EXIST:
@@ -235,7 +255,7 @@ void ATM::printer(Message printMsg, char* args[],int *amount_getter){
         org_amount = bank.checkAccountBalance(atoi(args[1]));
         lineToPrint << atmId << ": Transfer " << args[4] << " from account "<<
         args[1] << " to account " << args[3] << " new account balance is " <<
-        org_amount << " new target account balance is " << amount_getter;
+        org_amount << " new target account balance is " << *amount_getter;
         break;
     }
     default:

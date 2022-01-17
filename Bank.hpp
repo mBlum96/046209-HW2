@@ -19,6 +19,7 @@ private:
     //pthread_mutex_t accountWriteLock;
     myMutexLock mLock;
     pthread_mutex_t commissionLock;
+    pthread_mutex_t printLock;
     Log &bankLog;
      
 public:
