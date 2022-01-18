@@ -13,7 +13,7 @@ atmId(atmId), bank(bank), atmFile(atmFile){
 
 }
 ATM::~ATM(){
-    bank.~Bank();
+    //bank.~Bank();
 }
 
 void ATM::welcome(){
@@ -82,7 +82,7 @@ void ATM::run(){
 /////
 /////        line_input[0] = '\0'; //initialized for next line read
 /////    }
-
+    file.close();
 }
 
 Message ATM::executeLine(char* line_input/*, char* cmd_stirng*/){

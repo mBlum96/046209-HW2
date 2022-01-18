@@ -11,6 +11,9 @@ Bank::~Bank(){
     mLock.~myMutexLock();
     pthread_mutex_destroy(&commissionLock);
     pthread_mutex_destroy(&printLock);
+    // for(auto account : account_map){
+    //     account.second.~Account();
+    // }
 }
 
 Message Bank::doesAccountExist(const int accId){
@@ -99,8 +102,6 @@ Message Bank::checkPass(const int accId, const int accPass){
 
         return PASSWORD_ERR;
     }
-    mLock.leaveReader();
-    return PASSWORD_ERR;
 }
 
 Message Bank::deleteAccount(const int accId, int *amount_getter){
