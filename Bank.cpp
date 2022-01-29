@@ -3,14 +3,14 @@
 Bank::Bank(Log &log):
 bankBalance(0),bankLog(log){
     myMutexLock mLock;
-    pthread_mutex_init(&commissionLock,NULL);
-    pthread_mutex_init(&printLock,NULL);
+    // pthread_mutex_init(&commissionLock,NULL);
+    // pthread_mutex_init(&printLock,NULL);
 }
 
 Bank::~Bank(){
     mLock.~myMutexLock();
-    pthread_mutex_destroy(&commissionLock);
-    pthread_mutex_destroy(&printLock);
+    // pthread_mutex_destroy(&commissionLock);
+    // pthread_mutex_destroy(&printLock);
     // for(auto account : account_map){
     //     account.second.~Account();
     // }
@@ -116,18 +116,18 @@ Message Bank::deleteAccount(const int accId, int *amount_getter){
 
 Message Bank::transfer(const int sourceId, const int sourcePass,
 const int targetId, const int amount, int *amount_getter){
-    // mLock.enterWriter();
+    mLock.enterWriter();
     auto itSource = account_map.find(sourceId);
     auto itTarget = account_map.find(targetId);
     int sourceBalance = itSource->second.balanceGetter();
     if(sourceBalance < amount){
-        // mLock.leaveWriter();
+        mLock.leaveWriter();
         return INSUFFICIANT_FUNDS;
     }
     itSource->second.balanceSetter(amount,WITHDRAW);
     itTarget->second.balanceSetter(amount,DEPOSIT);
     *amount_getter = itTarget->second.balanceGetter();
-    // mLock.leaveWriter();
+    mLock.leaveWriter();
     return TRANSFER_SUCCESS;
 }
 
@@ -138,32 +138,40 @@ void Bank::collectCommission(){
     int commission = distr(gen);
     int arbitrary_amount = -1;
     int *amount_getter = &arbitrary_amount;
-    mLock.enterReader();
+    // mLock.enterReader();
     // pthread_mutex_lock(&commissionLock);
+    // bankLeaveWriter();
     for(auto account : account_map){
         int desired_amnt = commission * 0.01 * account.second.balanceGetter();
         //int curr_amnt = account.second.balanceGetter();
         // int withdraw_amnt = curr_amnt-desired_amnt;
         int acc_id = account.first;
-        pthread_mutex_lock(&commissionLock);
+        // pthread_mutex_lock(&commissionLock);
+
         if(withDrawMoney(acc_id,desired_amnt,amount_getter)!=WITHDREW_MONEY){
-            pthread_mutex_unlock(&commissionLock);
+
+            // pthread_mutex_unlock(&commissionLock);
+
             // sleep(1);
+            // bankLeaveWriter();
             commissionPrinter(FAILED_COLLECTING_COMMISSION, amount_getter,
             commission,acc_id,desired_amnt);
             // mLock.leaveWriter();
         }
         else{
             // pthread_mutex_lock(&commissionLock);
+            // bankEnterWriter();
             this->bankBalance += desired_amnt;
-            pthread_mutex_unlock(&commissionLock);
+            // pthread_mutex_unlock(&commissionLock);
+            // bankEnterWriter();
             commissionPrinter(COMMISSION_COLLECTED,amount_getter,
             commission,acc_id, desired_amnt);
         }
     }
     // pthread_mutex_unlock(&commissionLock);
     // sleep(1);
-    mLock.leaveReader();
+    // mLock.leaveReader();
+    // bankLeaveWriter();
     //Here I need to call the commissionPrinter with the COLLECTED_COMMISSION
     //Message
 }
@@ -203,19 +211,23 @@ void Bank::printSnapshot(){
         " $ , Account Password - " << acc_pass << endl;
     }
     mLock.leaveReader();
-    pthread_mutex_lock(&commissionLock);
+    // pthread_mutex_lock(&commissionLock);
+    bankEnterWriter();
     lineToPrint << "The Bank has " << this->bankBalance << " $";
-    pthread_mutex_unlock(&commissionLock);
+    // pthread_mutex_unlock(&commissionLock);
+    // bankLeaveWriter();
     // sleep(1);
-    pthread_mutex_lock(&printLock);
+    // pthread_mutex_lock(&printLock);
     cout << lineToPrint.str();
-    pthread_mutex_unlock(&printLock);
+    // pthread_mutex_unlock(&printLock);
+    bankLeaveWriter();
     // sleep(1);
 }
 
 Log& Bank::logGetter(){
     return this->bankLog;
 }
+
 
 void Bank::bankEnterReader(){
     mLock.enterReader();

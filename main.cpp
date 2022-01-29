@@ -28,7 +28,9 @@ void* atmStartRoutine(/*void* ATMinput*/void *atmInfo){
 void* bankCommissionStartRoutine(void* bankInput){
     Bank &bank = *(Bank*) bankInput;
     while(all_atm_handeled!=TRUE){
+        bank.bankEnterReader();
         bank.collectCommission();
+        bank.bankLeaveReader();
         sleep(BANK_COMMISSION_INTERVAL);
     }
     pthread_exit(NULL);
@@ -41,12 +43,14 @@ void* bankPrintStartRoutine(void* printInput){
        // cout<<"***************Im here*****************"<<endl;
         usleep (BANK_UPDATE_INTERVAL);
         bank.printSnapshot();
+
     }
     pthread_exit(NULL);
 }
 
 int main(int argc, char* argv[]){
     int numOfAtms = atoi(argv[1]);
+    // cout<<"num of atms is"<<numOfAtms<<endl;
     Log log("log.txt");
     // myMutexLock mLock;
     Bank bank(log);
@@ -92,13 +96,14 @@ int main(int argc, char* argv[]){
 
     for(auto thread : atmThreads){
         pthread_join(thread, NULL);
-    }
-    for(auto atm : atmList){
-        delete atm;
+        // cout<<"I joined(atm)"<<endl;
     }
     all_atm_handeled = TRUE;
     pthread_join(bankPrintThread,NULL);
     pthread_join(commissionThread, NULL);
     bank.printSnapshot();
+    for(auto atm : atmList){
+        delete atm;
+    }
     return 0;
 }
