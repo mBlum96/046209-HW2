@@ -18,6 +18,8 @@ private:
     Bank &bank;
     string atmFile;
 public:
+    // int atmId;
+    // string atmFile;
     ATM(int atmId, Bank &bank, string atmFile);
     ~ATM();
     void print_welcome_message();

@@ -7,6 +7,8 @@ myMutexLock::myMutexLock(){
 }
 
 myMutexLock::~myMutexLock(){
+    pthread_mutex_unlock(&writers);
+    pthread_mutex_unlock(&critical);
     pthread_mutex_destroy(&writers);
     pthread_mutex_destroy(&critical);
 }

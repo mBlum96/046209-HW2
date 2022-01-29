@@ -10,7 +10,7 @@
 
 ATM::ATM(int atmId, Bank &bank, string atmFile):
 atmId(atmId), bank(bank), atmFile(atmFile){
-
+    // cout<<"constractor file:"<<atmFile<<endl;
 }
 ATM::~ATM(){
     //bank.~Bank();
@@ -53,11 +53,13 @@ void ATM::run(){
     //char line_input[MAX_LINE_SIZE];
     // ifstream file(atmFile.c_str());
     ifstream file(atmFile);
+    // cout<<"in run the file name is "<<atmFile<<endl;
     string holder;
     while(getline(file,holder)){
         int line_len = holder.length();
         char* command = new char[line_len+1];
         strcpy(command,holder.c_str());
+        // cout<<"the command is "<<holder<<endl;
         Message printMsg = this->executeLine(command);
         if(printMsg!=SUCCESS){
             delete[] command;
@@ -117,9 +119,10 @@ Message ATM::executeLine(char* line_input/*, char* cmd_stirng*/){
             if(accountExistance==ACC_DOESNT_EXIST){
                 Message retMsg = bank.openAccount(accId,accPass,amount);
                 this->printer(retMsg,args,amount_getter);
-                return SUCCESS;
+                // return SUCCESS;
             }
-            return FAILED_OPENING_ACC;
+            // return FAILED_OPENING_ACC;
+            else this->printer(FAILED_OPENING_ACC,args,amount_getter);
         }
         else if((!strcmp(cmd,"W"))||(!strcmp(cmd,"D"))){
             if(accountExistance == ACC_EXISTS){
@@ -170,18 +173,22 @@ Message ATM::executeLine(char* line_input/*, char* cmd_stirng*/){
         }
     }
     else if(!strcmp(cmd,"T")){
+        bank.bankEnterWriter();
         int targetId = atoi(args[3]);
         int amount = atoi(args[4]);
         Message targetExists = bank.doesAccountExist(targetId);
         if(accountExistance!=ACC_EXISTS){
+            bank.bankLeaveWriter();
             return ACC_DOESNT_EXIST;
         }
         else if(targetExists==ACC_EXISTS){
             Message retMsg = bank.transfer(
                 accId,accPass,targetId,amount,amount_getter);
+            bank.bankLeaveWriter();
             printer(retMsg,args,amount_getter);
         }
         else{
+            bank.bankLeaveWriter();
             return TARGET_DOESNT_EXIST;
         }
     }
@@ -214,14 +221,14 @@ void ATM::printer(Message printMsg, char* args[],int *amount_getter){
     case INSUFFICIANT_FUNDS:
     {
         lineToPrint <<"Error "<<this->atmId <<
-        ": Your transaction failed - account id"<<args[1]
-        << "balance is lower than " << args[3];
+        ": Your transaction failed - account id "<<args[1]
+        << " balance is lower than " << args[3];
         break;
     }
     case PASSWORD_ERR:
     {
-        lineToPrint << "Error" << this->atmId<<": Your transaction failed - "
-        << "password for account id" << args[1] << "is incorrect";
+        lineToPrint << "Error " << this->atmId<<": Your transaction failed - "
+        << "password for account id " << args[1] << " is incorrect";
         break;
     }
     case DEPOSITED_MONEY:
@@ -232,8 +239,8 @@ void ATM::printer(Message printMsg, char* args[],int *amount_getter){
     }
     case BALANCE:
     {
-        lineToPrint << ": Account " << args[1] << " balance is " 
-        << amount_getter;
+        lineToPrint << this->atmId << ": Account " << args[1] << " balance is " 
+        << *amount_getter;
         break;
     }
     case ACCOUNT_DELETED:

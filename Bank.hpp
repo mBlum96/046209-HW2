@@ -12,7 +12,7 @@ using namespace std;
 class Bank
 {
 private:
-    unordered_map<int, Account> account_map;
+    map<int, Account> account_map;
     int bankBalance;
     //pthread_mutex_t logLock;
     //sem_t accountReadLock;
@@ -41,6 +41,10 @@ public:
     int commission, int acc_id, int desired_amnt);
     void printSnapshot();
     Log& logGetter();
+    void bankEnterReader();
+    void bankLeaveReader();
+    void bankEnterWriter();
+    void bankLeaveWriter();
 };
 
 

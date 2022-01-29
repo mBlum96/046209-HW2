@@ -47,8 +47,8 @@ Message Bank::withDrawMoney(const int accId,const int amount,
     auto it = account_map.find(accId);
     *amount_getter = it->second.balanceGetter();
     if(*amount_getter < amount){
-        //*amount_getter -= amount;
-        mLock.leaveWriter();
+        *amount_getter -= amount;
+        mLock.leaveReader();
 
         return INSUFFICIANT_FUNDS;
     }
@@ -65,13 +65,13 @@ const int amount, int *amount_getter){
     //mLock.enterWriter();
     mLock.enterReader();
     auto it = account_map.find(accId);
-    cout<<"the account I found is " << it->first << "with balance "<< it->second.balanceGetter()<<endl;
-    cout<<"the amount before calling the func is "<< amount<< endl;
+    // cout<<"the account I found is " << it->first << "with balance "<< it->second.balanceGetter()<<endl;
+    // cout<<"the amount before calling the func is "<< amount<< endl;
     //*amount_getter = it->second.balanceGetter()+amount;
     // cout<<"the ammoutn is " << amount <<endl;
     it->second.balanceSetter(amount,DEPOSIT);
     *amount_getter = it->second.balanceGetter();
-    cout<<"amount getter is"<<*amount_getter<<endl;
+    // cout<<"amount getter is"<<*amount_getter<<endl;
     // cout<<"the updated balance is" << it->second.balanceGetter();
     // mLock.leaveWriter();
     mLock.leaveReader();
@@ -116,18 +116,18 @@ Message Bank::deleteAccount(const int accId, int *amount_getter){
 
 Message Bank::transfer(const int sourceId, const int sourcePass,
 const int targetId, const int amount, int *amount_getter){
-    mLock.enterWriter();
+    // mLock.enterWriter();
     auto itSource = account_map.find(sourceId);
     auto itTarget = account_map.find(targetId);
     int sourceBalance = itSource->second.balanceGetter();
     if(sourceBalance < amount){
-        mLock.leaveWriter();
+        // mLock.leaveWriter();
         return INSUFFICIANT_FUNDS;
     }
     itSource->second.balanceSetter(amount,WITHDRAW);
     itTarget->second.balanceSetter(amount,DEPOSIT);
     *amount_getter = itTarget->second.balanceGetter();
-    mLock.leaveWriter();
+    // mLock.leaveWriter();
     return TRANSFER_SUCCESS;
 }
 
@@ -138,29 +138,32 @@ void Bank::collectCommission(){
     int commission = distr(gen);
     int arbitrary_amount = -1;
     int *amount_getter = &arbitrary_amount;
-    //mLock.enterWriter();
-    pthread_mutex_lock(&commissionLock);
+    mLock.enterReader();
+    // pthread_mutex_lock(&commissionLock);
     for(auto account : account_map){
         int desired_amnt = commission * 0.01 * account.second.balanceGetter();
         //int curr_amnt = account.second.balanceGetter();
         // int withdraw_amnt = curr_amnt-desired_amnt;
         int acc_id = account.first;
+        pthread_mutex_lock(&commissionLock);
         if(withDrawMoney(acc_id,desired_amnt,amount_getter)!=WITHDREW_MONEY){
             pthread_mutex_unlock(&commissionLock);
-            sleep(1);
+            // sleep(1);
             commissionPrinter(FAILED_COLLECTING_COMMISSION, amount_getter,
             commission,acc_id,desired_amnt);
             // mLock.leaveWriter();
         }
         else{
+            // pthread_mutex_lock(&commissionLock);
             this->bankBalance += desired_amnt;
+            pthread_mutex_unlock(&commissionLock);
             commissionPrinter(COMMISSION_COLLECTED,amount_getter,
             commission,acc_id, desired_amnt);
         }
     }
-    pthread_mutex_unlock(&commissionLock);
-    sleep(1);
-    //mLock.leaveWriter();
+    // pthread_mutex_unlock(&commissionLock);
+    // sleep(1);
+    mLock.leaveReader();
     //Here I need to call the commissionPrinter with the COLLECTED_COMMISSION
     //Message
 }
@@ -186,6 +189,7 @@ int commission, int acc_id, int desired_amnt){
 }
 
 void Bank::printSnapshot(){
+    // cout<<"hello world"<<endl;
     stringstream lineToPrint;
     cout<<("\033[2J");
     cout<<("\033[1;H");
@@ -196,19 +200,35 @@ void Bank::printSnapshot(){
         int acc_balance = account.second.balanceGetter();
         int acc_pass = account.second.passwordGetter();
         lineToPrint << "Account " << acc_id << ": Balance - " << acc_balance<<
-        " $ , Account Password - " << acc_pass;
+        " $ , Account Password - " << acc_pass << endl;
     }
     mLock.leaveReader();
     pthread_mutex_lock(&commissionLock);
     lineToPrint << "The Bank has " << this->bankBalance << " $";
     pthread_mutex_unlock(&commissionLock);
-    sleep(1);
+    // sleep(1);
     pthread_mutex_lock(&printLock);
     cout << lineToPrint.str();
     pthread_mutex_unlock(&printLock);
-    sleep(1);
+    // sleep(1);
 }
 
 Log& Bank::logGetter(){
     return this->bankLog;
+}
+
+void Bank::bankEnterReader(){
+    mLock.enterReader();
+}
+
+void Bank::bankLeaveReader(){
+    mLock.leaveReader();
+}
+
+void Bank::bankEnterWriter(){
+    mLock.enterWriter();
+}
+
+void Bank::bankLeaveWriter(){
+    mLock.leaveWriter();
 }

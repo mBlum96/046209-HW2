@@ -9,6 +9,7 @@
 #include <cstring>
 #include <unordered_map>
 #include <list>
+#include <map>
 
 //Streams:
 #include <iostream>
@@ -38,6 +39,7 @@ using std::random_device;
 using std::mt19937;
 using std::uniform_int_distribution;
 using std::list;
+using std::map;
 
 typedef enum Message{
     SUCCESS,
